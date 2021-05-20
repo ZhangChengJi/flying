@@ -14,21 +14,14 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-      - name: Set up Go ${{ matrix.go_version }}
-        uses: actions/setup-go@v1
-        with:
-          go-version: ${{ matrix.go_version }}
-        id: go
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
-
+      - name: Build
+        run: cd flying-admin && go build .
+      - name: Test With Coverage
+        run: cd flying-admin &&  go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1.0.2
-        with:
-          token: ${{secrets.CODECOV_TOKEN}}
+        uses: codecov/codecov-action@v1
+      - name: Run Vet & Lint
         run: |
-          cd flying-admin
-          go get -v -t -d ./...
-          go test -race -coverprofile=coverage.txt -covermode=atomic
-          curl -s https://codecov.io/bash
+          cd flying-admin &&
+          go vet .
+          golint -set_exit_status=1 .
