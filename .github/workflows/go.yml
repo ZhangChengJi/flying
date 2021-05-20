@@ -18,6 +18,7 @@ jobs:
     steps:
 
       - name: Set up Go ${{ matrix.go_version }}
+        run: ls
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go_version }}
