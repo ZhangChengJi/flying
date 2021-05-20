@@ -43,12 +43,11 @@ jobs:
           mkdir flying-${{ matrix.os }}
           cp main flying-${{ matrix.os }}
           tar -czvf flying-${{ matrix.os }}.tar.gz flying-${{ matrix.os }}
+          mv flying-${{ matrix.os }}.tar.gz  ../
 
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: |
-            cd flying-admin
-            flying-${{ matrix.os }}.tar.gz application/octet-stream
+          args:  flying-${{ matrix.os }}.tar.gz application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
