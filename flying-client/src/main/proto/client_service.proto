@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package client;
+option java_package = "om.github.zhangchengji.proto.client";
+import "client_model.proto";
+import "common.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+option java_outer_classname = "ClientServiceProto";
+option java_multiple_files = true;
+service ClientService {
+  rpc Ping(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc queryApp(google.protobuf.Empty) returns  (common.Response);
+  rpc config(Client) returns (common.Response);
+  rpc listener(Client) returns (common.Response);
+}

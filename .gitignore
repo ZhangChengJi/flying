@@ -1,0 +1,43 @@
+.idea/
+/flying-ui/node_modules
+/flying-ui/dist
+/flying-client/target
+log
+.DS_Store
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+go.sum
+/flying-admin/log/
+/server/gva
+latest_log
+latest_log
+
+*.iml
+
+HELP.md
+target/
+.mvn/
+mvnw.cmd
+mvnw
+!**/src/main/**
+!**/src/test/**
+
+**/*.iml
+node_modules

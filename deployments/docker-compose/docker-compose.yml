@@ -1,0 +1,38 @@
+version: "3"
+services:
+  mysql:
+    image: "mysql"
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123456"
+      - "TZ=Asia/Shanghai"
+    volumes:
+      - ./init/my.cnf:/etc/my.cnf
+      - ./data/mysql/data:/var/lib/mysql
+      - ./init/db:/docker-entrypoint-initdb.d
+
+  flying-admin:
+    image: "registry.cn-qingdao.aliyuncs.com/zcj-oss/flying-admin"
+    depends_on:
+      - mysql
+    ports:
+      - "8888:8888"
+    environment:
+      - "MYSQL_URL=mysql:3306"
+      - "MYSQL_USERNAME=root"
+      - "MYSQL_PASSWORD=123456"
+      - "MYSQL_DBNAME=flying_admin"
+
+  flying-config:
+    image: "registry.cn-qingdao.aliyuncs.com/zcj-oss/flying-config"
+    depends_on:
+      - flying-admin
+    ports:
+      - "8881:8881"
+    environment:
+      - "MYSQL_URL=mysql:3306"
+      - "MYSQL_USERNAME=root"
+      - "MYSQL_PASSWORD=123456"
+      - "MYSQL_DBNAME=flying_config"

@@ -1,0 +1,4 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+com.github.zhangchengji.flying.spring.FlyingConfigBootstrapConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.zhangchengji.flying.spring.FlyingConfigAutoConfiguration

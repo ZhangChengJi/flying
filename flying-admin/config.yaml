@@ -1,0 +1,43 @@
+# system configuration
+system:
+  env: 'public'  # Change to "develop" to skip authentication for development mode
+  addr: 8888
+  db-type: 'mysql'
+  oss-type: 'local'
+  privateKey: ca.pem
+  publicKey: ca.key
+  use-multipoint: false
+# mysql connect configuration
+mysql:
+  path: '127.0.0.1:3306'
+  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  db-name: 'flying_admin'
+  username: 'root'
+  password: '123456'
+  max-idle-conns: 10
+  max-open-conns: 50
+  log-mode: false
+  log-zap: ""
+
+redis:
+  db: 15
+  addr: '192.168.1.160:6379'
+  password: ''
+
+# zap logger configuration
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: '[GIN-VUE-ADMIN]'
+  director: 'log'
+  link-name: 'latest_log'
+  show-line: true
+  encode-level: 'LowercaseColorLevelEncoder'
+  stacktrace-key: 'stacktrace'
+  log-in-console: true
+
+
+jwt:
+  signing-key: '122'
+  expires-time: 1800
+  buffer-time: 86400

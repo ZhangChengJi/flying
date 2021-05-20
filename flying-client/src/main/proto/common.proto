@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+
+package common;
+option java_package = "om.github.zhangchengji.proto.common";
+import "google/protobuf/any.proto";
+
+
+// 统一响应格式
+message Request {
+  google.protobuf.Any query = 101;
+  int32 page = 102;
+  int32 pageSize = 103;
+  string orderKey = 104;
+  string orderDesc = 105;
+}
+
+message Response {
+  int32 code = 201;
+  string message = 202;
+  google.protobuf.Any data = 203;
+  Meta meta = 204;
+}
+
+message Responses {
+  int32 code = 201;
+  string message = 202;
+  repeated google.protobuf.Any data = 203;
+  Meta meta = 204;
+}
+
+message Meta {
+  int64 total = 101;
+}

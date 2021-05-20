@@ -1,0 +1,54 @@
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: flying-config
+  namespace: flying
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: flying-config
+  template:
+    metadata:
+      labels:
+        app: flying-config
+    spec:
+      containers:
+        - name: flying-config
+          image: registry.cn-qingdao.aliyuncs.com/zcj-oss/flying-config
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_URL
+              value: "192.168.0.57:3306"
+            - name: MYSQL_USERNAME
+              value: "root"
+            - name: MYSQL_PASSWORD
+              value: "djs@12316"
+            - name: MYSQL_DBNAME
+              value: "flying_config"
+          ports:
+            - containerPort: 8881
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flying-config
+  namespace: flying
+  annotations:
+    konghq.com/protocol: "grpcs"
+spec:
+  type: NodePort
+  ports:
+    - name: web
+      port: 8881
+      protocol: TCP
+      targetPort: 8881
+      nodePort: 32090
+  selector:
+    app: flying-config

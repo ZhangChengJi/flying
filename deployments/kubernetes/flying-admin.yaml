@@ -1,0 +1,68 @@
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: flying-admin
+  namespace: flying
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: flying-admin
+  template:
+    metadata:
+      labels:
+        app: flying-admin
+    spec:
+      containers:
+        - name: flying-admin
+          image: registry.cn-qingdao.aliyuncs.com/zcj-oss/flying-admin
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_URL
+              value: "192.168.1.165:3306"
+            - name: MYSQL_USERNAME
+              value: "root"
+            - name: MYSQL_PASSWORD
+              value: "djs@12316"
+            - name: MYSQL_DBNAME
+              value: "flying_admin"
+          ports:
+            - containerPort: 8888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flying-admin
+  namespace: flying
+spec:
+  ports:
+    - name: web
+      port: 8888
+      protocol: TCP
+      targetPort: 8888
+  selector:
+    app: flying-admin
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: flying-admin
+  namespace: flying
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+spec:
+  rules:
+    - host: flying.nq.lan
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: flying-admin
+              servicePort: 8888

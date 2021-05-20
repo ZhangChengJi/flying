@@ -1,0 +1,42 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.github.zhangchengji.flying.constants.FlyingConfigProperties",
+      "name": "spring.flying.bootstrap",
+      "type": "com.github.zhangchengji.flying.constants.FlyingConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.github.zhangchengji.flying.constants.FlyingConfigProperties",
+      "name": "spring.flying.bootstrap.enabled",
+      "description": "是否启用flying配置中心",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.github.zhangchengji.flying.constants.FlyingConfigProperties",
+      "name": "spring.flying.bootstrap.namespace",
+      "description": "项目的namespace名称，多个用  , 分割 ",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.github.zhangchengji.flying.constants.FlyingConfigProperties",
+      "name": "spring.flying.bootstrap.app-id",
+      "description": "项目的appId 名称唯一",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.github.zhangchengji.flying.constants.FlyingConfigProperties",
+      "name": "spring.flying.bootstrap.refresh-enabled",
+      "description": "配置动态刷新是否启动(默认为true)",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.github.zhangchengji.flying.constants.FlyingConfigProperties",
+      "name": "spring.flying.bootstrap.address",
+      "description": "配置中心环境地址，：- name: dev  url: 192.168.1.125:8881",
+      "type": "java.util.Map"
+    }
+    ]
+}

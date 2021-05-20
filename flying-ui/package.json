@@ -1,0 +1,71 @@
+{
+  "name": "flying-ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "ace-builds": "^1.4.12",
+    "ant-design-vue": "^1.7.2",
+    "axios": "^0.21.1",
+    "babel-plugin-import": "^1.13.3",
+    "codemirror": "^5.59.2",
+    "core-js": "^3.6.5",
+    "file-saver": "^2.0.5",
+    "js-yaml": "^4.0.0",
+    "jsonlint": "^1.6.3",
+    "node-sass": "^5.0.0",
+    "nprogress": "^0.2.0",
+    "sass-loader": "^10.1.1",
+    "sass-resources-loader": "^2.1.1",
+    "script-loader": "^0.7.2",
+    "vue": "^2.6.11",
+    "vue-axios": "^3.2.4",
+    "vue-codemirror": "^4.0.6",
+    "vue-codemirror-editor": "^1.0.13",
+    "vue-gemini-scrollbar": "^2.0.1",
+    "vue-i18n": "^8.24.4",
+    "vue-ins-progress-bar": "^1.3.8",
+    "vue-monaco-editor": "^0.0.19",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0",
+    "xlsx": "^0.16.9"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "antd-theme-webpack-plugin": "^1.3.7",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "less": "^4.1.1",
+    "less-loader": "6.0.0",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-vuei18n-loader": "^1.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
