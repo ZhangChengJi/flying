@@ -91,7 +91,7 @@
       <dependency>
      		<groupId>com.github.zhangchengji</groupId>
          <artifactId>flying-client</artifactId>
-         <version>1.0.0-RELEASE</version>
+         <version>1.0.0</version>
       </dependency>
      ```
 

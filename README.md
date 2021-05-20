@@ -86,9 +86,9 @@ Note: The docker-compose deployment method is only suitable for testing. For rea
 
      ```xml
       <dependency>
-     <groupId>com.github.zhangchengji</groupId>
+         <groupId>com.github.zhangchengji</groupId>
          <artifactId>flying-client</artifactId>
-         <version>1.0.0-RELEASE</version>
+         <version>1.0.0</version>
       </dependency>
      ```
 
