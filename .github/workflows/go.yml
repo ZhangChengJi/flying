@@ -34,11 +34,12 @@ jobs:
 
       - name: Build
         run: |
-          ls
+          cd flying-admin
           go build -v -o main .
 
       - name: Gzip
         run: |
+          cd flying-admin
           mkdir flying-${{ matrix.os }}
           cp main flying-${{ matrix.os }}
           tar -czvf flying-${{ matrix.os }}.tar.gz flying-${{ matrix.os }}
