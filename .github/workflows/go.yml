@@ -27,27 +27,5 @@ jobs:
         run: |
           cd flying-admin
           go get -v -t -d ./...
-          if [ -f Gopkg.toml ]; then
-              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-              dep ensure
-          fi
-
-      - name: Build
-        run: |
-          cd flying-admin
-          go build -v -o main .
-
-      - name: Gzip
-        run: |
-          cd flying-admin
-          mkdir flying-${{ matrix.os }}
-          cp main flying-${{ matrix.os }}
-          tar -czvf flying-${{ matrix.os }}.tar.gz flying-${{ matrix.os }}
-          mv flying-${{ matrix.os }}.tar.gz  ../
-
-      - name: Upload to release
-        uses: JasonEtco/upload-to-release@master
-        with:
-          args:  flying-${{ matrix.os }}.tar.gz application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.testci }}
+          go test -race -coverprofile=coverage.txt -covermode=atomic
+          curl -s https://codecov.io/bash
