@@ -19,11 +19,6 @@ mysql:
   log-mode: false
   log-zap: ""
 
-redis:
-  db: 15
-  addr: '192.168.1.160:6379'
-  password: ''
-
 # zap logger configuration
 zap:
   level: 'info'
