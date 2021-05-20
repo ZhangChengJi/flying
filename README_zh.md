@@ -1,5 +1,7 @@
 ![flying](./docs/image/flying.png)
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/ZhangChengJi/flying)  ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/ZhangChengJi/flying?filename=flying-admin%2Fgo.mod)   ![GitHub](https://img.shields.io/github/license/ZhangChengJi/flying)
+
 [Flying](https://github.com/ZhangChengJi/flying.git) 是微服务多环境云原生配置中心
 
 ![home](./docs/image/flying-home.jpg)
