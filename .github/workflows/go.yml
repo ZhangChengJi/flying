@@ -7,13 +7,12 @@ on:
 jobs:
 
   release:
-    if: github.repository == 'PasteUs/HelloCI'
     name: Build with go ${{ matrix.go_version }} on ${{ matrix.os }} and upload
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        go_version: [1.13]
+        go_version: [1.14]
         os: [ubuntu-latest]
 
     steps:
