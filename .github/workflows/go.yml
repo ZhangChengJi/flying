@@ -47,6 +47,8 @@ jobs:
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: flying-${{ matrix.os }}.tar.gz application/octet-stream
+          args: |
+            cd flying-admin
+            flying-${{ matrix.os }}.tar.gz application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
