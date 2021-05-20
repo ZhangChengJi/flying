@@ -17,8 +17,6 @@ package com.github.zhangchengji.flying.listener;
 
 /**
  * Property Change Type.
- *
- * @author rushsky518
  */
 public enum PropertyChangeType {
     /**

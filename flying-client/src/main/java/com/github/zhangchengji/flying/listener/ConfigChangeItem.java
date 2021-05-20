@@ -18,8 +18,6 @@ package com.github.zhangchengji.flying.listener;
 
 /**
  * ConfigChangeItem.
- *
- * @author rushsky518
  */
 public class ConfigChangeItem {
     

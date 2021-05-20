@@ -40,6 +40,12 @@
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+        <maven-release-plugin.version>3.0.0-M1</maven-release-plugin.version>
+        <grpc.version>1.36.0</grpc.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <guava.version>30.1-android</guava.version>
+        <guice.version>4.2.3</guice.version>
+        <spring-cloud.version>2.2.5.RELEASE</spring-cloud.version>
     </properties>
     <build>
         <extensions>
@@ -151,7 +157,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>${maven-release-plugin.version}</version>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -172,8 +178,6 @@
         </repository>
     </distributionManagement>
 
-
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -190,29 +194,24 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
-            <version>1.36.0</version>
+            <version>${grpc.version}</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-protobuf</artifactId>
-            <version>1.36.0</version>
+            <version>${grpc.version}</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
-            <version>1.36.0</version>
+            <version>${grpc.version}</version>
         </dependency>
-        <dependency> <!-- necessary for Java 9+ -->
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>annotations-api</artifactId>
-            <version>6.0.53</version>
-            <scope>provided</scope>
-        </dependency>
+
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
 
 
@@ -225,14 +224,13 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1-android</version>
+            <version>${guava.version}</version>
         </dependency>
 
-        <!--Google AdWords项目开源出来的一款轻量级的依赖注入-->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>4.2.3</version>
+            <version>${guice.version}</version>
         </dependency>
 
         <dependency>
@@ -244,9 +242,8 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-context</artifactId>
-            <version>2.2.5.RELEASE</version>
+            <version>${spring-cloud.version}</version>
         </dependency>
     </dependencies>
-
 
 </project>

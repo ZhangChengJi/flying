@@ -17,18 +17,10 @@
 package com.github.zhangchengji.flying.listener;
 
 
-/**
- * AbstractConfigChangeListener.
- *
- * @author rushsky518
- */
+
 public abstract class AbstractConfigChangeListener extends AbstractListener {
     
-    /**
-     * handle config change.
-     *
-     * @param event config change event
-     */
+
     public abstract void receiveConfigChange(final ConfigChangeEvent event);
     
     @Override

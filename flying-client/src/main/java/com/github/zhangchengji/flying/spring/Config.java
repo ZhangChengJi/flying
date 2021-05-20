@@ -22,9 +22,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
+
 public interface Config {
   /**
    * Return the property value with the given key, or {@code defaultValue} if the key doesn't exist.

@@ -18,9 +18,7 @@ package com.github.zhangchengji.flying.listener;
 
 import java.util.concurrent.Executor;
 
-/**
- * Listener for watch config.
- */
+
 public interface Listener {
     
     /**

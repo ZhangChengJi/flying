@@ -20,8 +20,6 @@ import java.util.Properties;
 
 /**
  * Factory interface to construct Properties instances.
- *
- * @author songdragon@zts.io
  */
 public interface PropertiesFactory {
 

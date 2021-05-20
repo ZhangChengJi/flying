@@ -21,8 +21,6 @@ import java.util.Properties;
 
 /**
  * Default PropertiesFactory implementation.
- *
- * @author songdragon@zts.io
  */
 public class DefaultPropertiesFactory implements PropertiesFactory {
 

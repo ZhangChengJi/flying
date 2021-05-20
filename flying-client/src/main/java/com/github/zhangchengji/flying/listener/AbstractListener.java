@@ -18,11 +18,7 @@ package com.github.zhangchengji.flying.listener;
 
 import java.util.concurrent.Executor;
 
-/**
- * Listener Adapter,use default notify thread.
- *
- * @author water.lyl
- */
+
 @SuppressWarnings("PMD.AbstractClassShouldStartWithAbstractNamingRule")
 public abstract class AbstractListener implements Listener {
     

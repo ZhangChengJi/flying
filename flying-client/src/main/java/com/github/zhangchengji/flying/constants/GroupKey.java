@@ -19,7 +19,6 @@ package com.github.zhangchengji.flying.constants;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Synthesize the form of dataId+groupId. Escapes reserved characters in dataId and groupId.
  */
 public class GroupKey {
     

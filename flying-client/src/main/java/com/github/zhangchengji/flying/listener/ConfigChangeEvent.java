@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * ConfigChangeEvent.
  *
- * @author rushsky518
  */
 public class ConfigChangeEvent {
     
