@@ -4,7 +4,7 @@
 
     <groupId>com.github.zhangchengji</groupId>
     <artifactId>flying-client</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>flying-client</name>
@@ -15,7 +15,7 @@
         <url>https://github.com/ZhangChengJi/flying.git</url>
         <connection>scm:git:https://github.com/ZhangChengJi/flying.git</connection>
         <developerConnection>scm:git:git@github.com:ZhangChengJi/flying.git</developerConnection>
-    <tag>v1.0.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
     <developers>
