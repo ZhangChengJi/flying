@@ -25,7 +25,7 @@ jobs:
 
       - name: Get dependencies
         run: |
-          ls
+          cd flying-admin
           go get -v -t -d ./...
           if [ -f Gopkg.toml ]; then
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -34,6 +34,7 @@ jobs:
 
       - name: Build
         run: |
+          ls
           go build -v -o main .
 
       - name: Gzip
