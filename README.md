@@ -1,6 +1,7 @@
 ![flying](./docs/image/flying.png)
 
-![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/ZhangChengJi/flying?filename=flying-admin%2Fgo.mod)![GitHub](https://img.shields.io/github/license/ZhangChengJi/flying)
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/ZhangChengJi/flying) ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/ZhangChengJi/flying?filename=flying-admin%2Fgo.mod) ![GitHub](https://img.shields.io/github/license/ZhangChengJi/flying)
 
 [Flying](https://github.com/ZhangChengJi/flying.git) is a microservice multi-environment cloud native configuration center
 
