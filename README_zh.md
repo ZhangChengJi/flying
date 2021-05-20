@@ -129,7 +129,7 @@
 
 ## 执照
 
-该项目已获得[Apache 2许可](https://github.com/ctripcorp/apollo/blob/master/LICENSE)。
+该项目已获得[Apache 2许可](https://github.com/ZhangChengJi/flying/blob/master/LICENSE)。
 
 ## 用户登记
 

@@ -129,7 +129,7 @@ Note: The docker-compose deployment method is only suitable for testing. For rea
 
 ## License
 
-This project has obtained [Apache 2 License](https://github.com/ctripcorp/apollo/blob/master/LICENSE).
+This project has obtained [Apache 2 License](https://github.com/ZhangChengJi/flying/blob/master/LICENSE).
 
 ## User registration
 
