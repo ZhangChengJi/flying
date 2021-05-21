@@ -8,8 +8,7 @@ import (
 )
 
 func main() {
-	var cacheSize int
-	listener.Init(cacheSize * 1024)
+	listener.Init(10*1024 * 1024)
 	global.GVA_VP = core.Viper()      // 初始化Viper
 	global.LOG = core.Zap()           // 初始化zap日志库
 	global.DB = initialize.Gorm()     // gorm连接数据库
@@ -17,7 +16,6 @@ func main() {
 	// 程序结束前关闭数据库链接
 	db, _ := global.DB.DB()
 	defer db.Close()
-
 	core.RunServer()
 
 }

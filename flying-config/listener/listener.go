@@ -2,7 +2,6 @@ package listener
 
 import (
 	"container/list"
-	"fmt"
 	"sync"
 )
 
@@ -18,7 +17,6 @@ func Init(cacheSize int) {
 	defaultListener = newConfig(cacheSize)
 }
 func newConfig(cacheSize int) *Listener {
-	fmt.Println("初始化")
 	return &Listener{
 		cache:    New(cacheSize),
 		watchers: make(map[string]*list.List),

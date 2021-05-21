@@ -36,3 +36,5 @@ jwt:
   signing-key: '122'
   expires-time: 1800
   buffer-time: 86400
+  privateKey: private.key
+  publicKey: public.key

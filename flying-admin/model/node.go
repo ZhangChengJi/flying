@@ -56,15 +56,17 @@ func NewGrpcService() {
 	var nodes []*Node
 	global.DB.Find(&nodes)
 	var bo = true
-
+	ctx1, cel := context.WithTimeout(context.Background(), time.Second*3)
 	for i := 0; i < len(nodes); i++ {
 		con, err := NewConn(nodes[i].Url)
 		if err != nil {
 			global.LOG.Error("获取连接错误")
 		}
 		Conn[nodes[i].Key] = con
+
 		t := client.NewClientServiceClient(con)
-		_, err = t.Ping(context.Background(), &emptypb.Empty{})
+		_, err = t.Ping(ctx1, &emptypb.Empty{})
+		cel()
 		//TODO: 启动时候检查连接状态并且修改数据库
 		if err != nil {
 			bo = false

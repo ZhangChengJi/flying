@@ -12,8 +12,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"io/ioutil"
-	"log"
 	"strconv"
 	"time"
 )
@@ -86,38 +84,30 @@ var (
 	TokenNotValidYet = errors.New("Token not active yet")
 	TokenMalformed   = errors.New("That's not even a token")
 	TokenInvalid     = errors.New("Couldn't handle this token:")
-	publicKey        *rsa.PublicKey
-	privateKey       *rsa.PrivateKey
+	PublicKey        *rsa.PublicKey
+	PrivateKey       *rsa.PrivateKey
 )
 
 func NewJWT() *JWT {
 	return &JWT{
 		[]byte(global.GVA_CONFIG.JWT.SigningKey),
 	}
+
 }
 func init() {
-	publicKeyByte, err := ioutil.ReadFile("public.key")
-	if err != nil {
-		log.Println(err.Error())
-	}
-	publicKey, err = jwt.ParseRSAPublicKeyFromPEM(publicKeyByte)
-	privateKeyByte, err := ioutil.ReadFile("private.key")
-	if err != nil {
-		log.Println(err.Error())
-	}
-	privateKey, _ = jwt.ParseRSAPrivateKeyFromPEM(privateKeyByte)
+
 }
 
 // 创建一个token
 func (j *JWT) CreateToken(claims request.CustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
-	return token.SignedString(privateKey)
+	return token.SignedString(PrivateKey)
 }
 
 // 解析 token
 func (j *JWT) ParseToken(tokenString string) (*request.CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (i interface{}, e error) {
-		return publicKey, nil
+		return PublicKey, nil
 	})
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {

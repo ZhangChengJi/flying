@@ -16,7 +16,8 @@ func main() {
 	// 程序结束前关闭数据库链接
 	db, _ := global.DB.DB()
 	defer db.Close()
-	model.NewGrpcService()
+	initialize.Jwt()
+	go model.NewGrpcService()
 	initialize.NewEvent()
 	utils.ConnectTestTask()
 	core.RunWindowsServer()
