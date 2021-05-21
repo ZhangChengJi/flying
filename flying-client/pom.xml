@@ -15,7 +15,6 @@
         <url>https://github.com/ZhangChengJi/flying.git</url>
         <connection>scm:git:https://github.com/ZhangChengJi/flying.git</connection>
         <developerConnection>scm:git:git@github.com:ZhangChengJi/flying.git</developerConnection>
-    <tag>1.0.1-RELEASE</tag>
   </scm>
 
     <developers>
