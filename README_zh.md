@@ -49,7 +49,7 @@
 
    在 flying 的根目录下，通过 docker-compose 创建服务
 
-    ```sh
+    ```shell
    $ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up
     ```
 

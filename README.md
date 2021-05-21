@@ -50,7 +50,7 @@ Services are divided into:
 
    In the root directory of flying, create a service through docker-compose
 
-    ```sh
+    ```shell
    $ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up
     ```
 
