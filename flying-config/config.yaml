@@ -22,9 +22,9 @@ mysql:
 zap:
   level: 'info'
   format: 'console'
-  prefix: '[GIN-VUE-ADMIN]'
+  prefix: '[flying-config]'
   director: 'log'
-  link-name: 'latest_log'
+  link-name: './log/latest.log'
   show-line: true
   encode-level: 'LowercaseColorLevelEncoder'
   stacktrace-key: 'stacktrace'
