@@ -127,6 +127,7 @@ name: "AddNode",
     },
 
     onClose() {
+      this.iconLoading = false;
       this.visible = false;
       this.resetForm();
     },
