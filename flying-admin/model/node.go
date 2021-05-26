@@ -102,11 +102,11 @@ func UpdateStatus(key string, b bool) {
 		return
 	}
 	node.Status = b
-	global.DB.Debug().Save(&node)
+	global.DB.Save(&node)
 }
 
 func NewConn(url string) (*grpc.ClientConn, error) {
-	creds, err := credentials.NewClientTLSFromFile(global.GVA_CONFIG.System.PrivateKey, "flying.com")
+	creds, err := credentials.NewClientTLSFromFile(global.GVA_CONFIG.System.PrivateKey, global.GVA_CONFIG.System.ServerName)
 	if err != nil {
 		grpclog.Fatalf("Failed to create TLS credentials %v", err)
 	}
