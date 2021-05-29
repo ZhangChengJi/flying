@@ -143,7 +143,7 @@ func ClearAppNode(app *model.App, id []uint, nodes []*model.Node) (code int32, e
 		tx.Commit()
 	}
 
-	return constant.CREATE_SUCCESS, err
+	return constant.DELETE_SUCCESS, err
 }
 func UpdateRemoteApp(app *model.App, nodes []*model.Node) (code int32, err error) {
 	tx := global.DB.Begin()

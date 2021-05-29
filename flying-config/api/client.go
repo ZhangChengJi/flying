@@ -67,11 +67,10 @@ func (s *Client) Listener(ctx context.Context, req *proto.Client) (*re.Response,
 		_ = w.Stop()
 	})
 
-	value, err := w.Next()
-	fmt.Println(value)
+	_, err := w.Next()
 	if err != nil {
-		return response.NotUpdated("不用更新"), nil
+		return response.NotUpdated("no need to update"), nil
 
 	}
-	return response.OkWithMessage("需要进行更新"), nil
+	return response.OkWithMessage("need to be updated"), nil
 }

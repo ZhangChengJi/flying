@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false) //proxyBeanMethods为flase 不会被代理，如果为true会被CGLIB代理，如果只是普通类的话建议设置为 flase ,这样能提升性能
-@ConditionalOnProperty(name = {"spring.flying.bootstrap.enabled"}, matchIfMissing = false)
+@ConditionalOnProperty(name = {"spring.flying.bootstrap.refresh-enabled"}, matchIfMissing = false)
 public class FlyingConfigAutoConfiguration {
     @Bean
     public FlyingConfigProperties flyingConfigProperties(ApplicationContext context) {

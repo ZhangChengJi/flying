@@ -4,8 +4,9 @@ system:
   address: '0.0.0.0:8881'
   db-type: 'mysql'
   oss-type: 'local'
-  privateKey: ca.pem
-  publicKey: ca.key
+  privateKey: secret/ca.pem
+  publicKey: secret/ca.key
+  serverName: flying.com
   use-multipoint: false
 # mysql connect configuration
 mysql:

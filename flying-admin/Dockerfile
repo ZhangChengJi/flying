@@ -20,15 +20,12 @@ RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o  fl
 
 
 
-FROM scratch as prod
+FROM alpine as prod
 
 COPY --from=build /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 COPY --from=build /go/release/flying-admin /
 COPY --from=build /go/release/config.yaml /
-COPY --from=build /go/release/private.key /
-COPY --from=build /go/release/public.key /
-COPY --from=build /go/release/ca.key /
-COPY --from=build /go/release/ca.pem /
+COPY --from=build /go/release/secret /secret
 COPY --from=build /go/release/dist /dist
 
 CMD ["./flying-admin"]

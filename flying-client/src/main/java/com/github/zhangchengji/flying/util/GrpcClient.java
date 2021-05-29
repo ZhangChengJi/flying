@@ -16,6 +16,7 @@
 
 package com.github.zhangchengji.flying.util;
 
+import com.github.zhangchengji.flying.constants.Constants;
 import com.github.zhangchengji.flying.constants.FlyingConfigProperties;
 import com.github.zhangchengji.proto.client.Client;
 import com.github.zhangchengji.proto.client.FlyingConfig;
@@ -55,10 +56,7 @@ public class GrpcClient {
 
     public GrpcClient(FlyingConfigProperties flyingConfigProperties) {
         this.flyingConfigProperties = flyingConfigProperties;
-
-
         blockingStub = ClientServiceGrpc.newBlockingStub(initGrpcConnection());
-
     }
 
     private ManagedChannel initGrpcConnection() {
@@ -79,7 +77,7 @@ public class GrpcClient {
         // 构建 Channel
         this.channel = NettyChannelBuilder
                 .forTarget(this.flyingConfigProperties.getServerAddr())
-                .overrideAuthority("flying.com")
+                .overrideAuthority(Constants.SERVER_NAME)
                 .sslContext(sslContext)
                 .build();
         return channel;

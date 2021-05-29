@@ -31,9 +31,6 @@ import org.springframework.context.annotation.Configuration;
 public class FlyingConfigBootstrapConfiguration {
     private final static Logger log = LoggerFactory.getLogger(FlyingConfigBootstrapConfiguration.class);
 
-    public FlyingConfigBootstrapConfiguration(){
-       log.info("✈️ flying 配置中心启动.......");
-    }
     @Bean
     @ConditionalOnMissingBean
     public FlyingConfigProperties flyingConfigProperties(){return new FlyingConfigProperties();}

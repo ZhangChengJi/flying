@@ -25,7 +25,6 @@ FROM scratch as prod
 COPY --from=build /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 COPY --from=build /go/release/flying-config /
 COPY --from=build /go/release/config.yaml /
-COPY --from=build /go/release/ca.key /
-COPY --from=build /go/release/ca.pem /
+COPY --from=build /go/release/secret /secret
 
 CMD ["./flying-config"]

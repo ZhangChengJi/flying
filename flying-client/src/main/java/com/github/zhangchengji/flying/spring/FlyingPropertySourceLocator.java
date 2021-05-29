@@ -58,11 +58,11 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
          flyingConfigProperties.setEnvironment(environment);
         CompositePropertySource composite = new CompositePropertySource(PropertySourcesConstants.FLYING_BOOTSTRAP_PROPERTY_SOURCE_NAME);
         String namespaces = flyingConfigProperties.getNamespace();
-        log.info("所有namespace："+namespaces);
+        log.info("all namespace："+namespaces);
 
         String[] namespaceList= namespaces.trim().split(",");
       try {
-          log.info("正在请求获取配置... 🚗 🚗 🚗 ");
+          log.info("Getting configuration... 🚗 🚗 🚗 "); //正在获取配置
         for (String namespace : namespaceList) {
                 composite.addFirstPropertySource(getConfig(namespace));
         }
@@ -70,7 +70,7 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
            grpcClient.shutdown();
           }
         } catch (Exception e) {
-            log.error("配置加载失败");
+            log.error("Configuration failed to load");
             e.printStackTrace();
         }
         return composite;
@@ -79,14 +79,14 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
 
 
     public synchronized FlyingPropertySource getConfig(String namespace)   {
-        log.info("⚙️ namespace: "+namespace+"进行获取配置");
+        log.info("⚙️ namespace: "+namespace+"Get configuration");
         try {
             FlyingConfig flyingConfig = grpcClient.config(namespace);
             if (flyingConfig==null){
                return null;
             }
             FlyingPropertySource source=null;
-            log.info("namespace:"+namespace+",配置获取成功 🎈🎈🎈");
+            log.info("namespace:"+namespace+",Configuration obtained successfully 🎈🎈🎈");
             switch(flyingConfig.getFormat()){
                 case "yaml":
                     YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
@@ -97,15 +97,15 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
                     source = new FlyingPropertySource(this.flyingConfigProperties.getAppId(),namespace, flyingConfig.getValue());
                     break;
                 default:
-                    log.error("未匹配到配置格式");
-                    throw new FlyingConfigException("未匹配到配置格式");
+                    log.error("Does not match the configuration format"); //未匹配到配置格式
+                    throw new FlyingConfigException("Does not match the configuration format");
             }
 
         RemoteConfigRepository.collectFlyingPropertySource(source);
             return source;
 
         } catch (Exception e) {
-            log.error("配置中心无法连接错误，请检查配置");
+            log.error("Configuration center connection failed. Please check whether the configuration center is running normally?"); //配置中心连接失败，请配置中心检查是否正常运行
            e.printStackTrace();
         }
         return null;

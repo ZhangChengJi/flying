@@ -23,14 +23,25 @@ func Ping(c *gin.Context) {
 	node, _ := logic.GetNode(uint(id))
 	_, err := node.Client().Ping(context.Background(), &emptypb.Empty{})
 	if err == nil {
-		node.Status = true
-		if err := logic.UpdateNode(node); err != nil {
-			global.LOG.Error(err.Error(), zap.Any("err", err))
-			response.BuildResult(constant.UPDATE_FAILED, c)
-		} else {
-			response.BuildResult(constant.CONNECTION_SUCCESS, c)
+		if !node.Status{
+			node.Status=true
+			if err := logic.UpdateNode(node); err != nil {
+				global.LOG.Error(err.Error(), zap.Any("err", err))
+			} else {
+				utils.Dispatcher.DispatchEvent(utils.Update, node)
+			}
 		}
+		response.BuildResult(constant.CONNECTION_SUCCESS, c)
 	} else {
+		if node.Status{
+			node.Status=false
+			if err := logic.UpdateNode(node); err != nil {
+				global.LOG.Error(err.Error(), zap.Any("err", err))
+			} else {
+				utils.Dispatcher.DispatchEvent(utils.Update, node)
+
+			}
+		}
 		response.BuildResult(constant.CONNECTION_FAILED, c)
 	}
 }

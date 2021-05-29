@@ -4,8 +4,9 @@ system:
   addr: 8888
   db-type: 'mysql'
   oss-type: 'local'
-  privateKey: ca.pem
-  publicKey: ca.key
+  privateKey: secret/ca.pem
+  publicKey: secret/ca.key
+  serverName: flying.com
   use-multipoint: false
 # mysql connect configuration
 mysql:
@@ -36,5 +37,5 @@ jwt:
   signing-key: '122'
   expires-time: 1800
   buffer-time: 86400
-  privateKey: private.key
-  publicKey: public.key
+  privateKey: secret/private.key
+  publicKey: secret/public.key

@@ -125,10 +125,11 @@ public class FlyingRefreshClient  {
     class LongPollingRunnable implements Runnable {
 
         private final int taskId;
-
+        private boolean connectionStatus = true;
         public LongPollingRunnable(int taskId) {
             this.taskId = taskId;
-        }        @Override
+        }
+        @Override
         public void run() {
             List<CacheData> cacheDatas = new ArrayList<CacheData>();
             try {
@@ -140,12 +141,17 @@ public class FlyingRefreshClient  {
                             if(grpcClient.listener()){
                                 cacheData.checkListenerMd5();
                             }
+                            if(!connectionStatus){
+                                log.info("The configuration center resumes normal connection successfully"); //配置中心已经恢复正常连接
+                                connectionStatus=true;
+                            }
                         }
 
                     }
                 executorService.execute(this);
             } catch (Throwable e) {
-                log.error("longPolling error : ", e);
+                connectionStatus=false;
+                log.error("longPolling error : Configuration center connection failed ", e);
                 executorService.schedule(this, 30000, TimeUnit.MILLISECONDS);
             }
         }

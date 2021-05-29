@@ -8,4 +8,5 @@ type System struct {
 	UseMultipoint bool   `mapstructure:"use-multipoint" json:"useMultipoint" yaml:"use-multipoint"`
 	PrivateKey    string `mapstructure:"privateKey" json:"privateKey" yaml:"privateKey"`
 	PublicKey     string `mapstructure:"publicKey" json:"publicKey" yaml:"publicKey"`
+	ServerName    string `mapstructure:"serverName" json:"serverName" yaml:"serverName"`
 }
