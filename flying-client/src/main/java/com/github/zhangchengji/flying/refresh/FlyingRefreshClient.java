@@ -18,8 +18,9 @@ package com.github.zhangchengji.flying.refresh;
 
 import com.github.zhangchengji.flying.constants.CacheData;
 import com.github.zhangchengji.flying.constants.GroupKey;
+import com.github.zhangchengji.flying.factory.Grpc;
+import com.github.zhangchengji.flying.factory.GrpcFactory;
 import com.github.zhangchengji.flying.listener.Listener;
-import com.github.zhangchengji.flying.util.GrpcClient;
 import com.google.common.base.Joiner;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
@@ -36,12 +37,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class FlyingRefreshClient  {
     private final static Logger log = LoggerFactory.getLogger(FlyingRefreshClient.class);
-    private static final Escaper queryParamEscaper = UrlEscapers.urlFormParameterEscaper();
-    private static final Joiner.MapJoiner MAP_JOINER = Joiner.on("&").withKeyValueSeparator("=");
      ScheduledExecutorService executor;
      ScheduledExecutorService executorService;
      private Properties properties;
-    private GrpcClient grpcClient;
+     private Grpc grpc;
     private final AtomicReference<Map<String, CacheData>> cacheMap = new AtomicReference<Map<String, CacheData>>(
             new HashMap<String, CacheData>());
     public void addTenantListeners(String appId, String namespace, List<? extends Listener> listeners) {
@@ -56,7 +55,7 @@ public class FlyingRefreshClient  {
         synchronized (cacheMap) {
             String key = GroupKey.getKeyTenant(appId, namespace, "");
             CacheData cache = new CacheData(appId, namespace,properties.getProperty(SERVER_ADDR));
-                    cache.setValue(grpcClient.config(namespace).getValue());
+                    cache.setValue(grpc.config(namespace).getValue());
             Map<String, CacheData> copy = new HashMap<String, CacheData>(this.cacheMap.get());
             copy.put(key, cache);
             cacheMap.set(copy);
@@ -66,25 +65,10 @@ public class FlyingRefreshClient  {
 
     }
 
-    private Map<String, Object> propertiesToMap(Properties properties) {
-        Map<String, Object> result = new HashMap(16);
-        Enumeration keys = properties.propertyNames();
-        while(keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
-            Object value = properties.getProperty(key);
-            if (value != null) {
-                result.put(key, ((String)value).trim());
-            } else {
-                result.put(key, (Object)null);
-            }
-        }
 
-        return result;
-    }
-
-    public FlyingRefreshClient(Properties properties, GrpcClient grpcClient){
+    public FlyingRefreshClient(Properties properties, Grpc grpc){
         this.properties = properties;
-        this.grpcClient=grpcClient;
+        this.grpc = grpc;
         this.executor = Executors.newScheduledThreadPool(1);
         this.executorService = Executors
                 .newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactory() {
@@ -105,12 +89,6 @@ public class FlyingRefreshClient  {
     public void checkConfigInfo() {
 
         int listenerSize = cacheMap.get().size();
-        // Round up the longingTaskCount.
-
-
-        //         if(f.getBody().ok()){
-        //
-        //         }
         double perTaskConfigSize = 3000;
         int longingTaskCount = (int) Math.ceil(listenerSize / perTaskConfigSize);
         if (longingTaskCount > currentLongingTaskCount) {
@@ -138,7 +116,7 @@ public class FlyingRefreshClient  {
                     if (cacheData.getTaskId() == taskId) {
                         cacheDatas.add(cacheData);
 
-                            if(grpcClient.listener()){
+                            if(grpc.listener()){
                                 cacheData.checkListenerMd5();
                             }
                             if(!connectionStatus){
@@ -157,13 +135,5 @@ public class FlyingRefreshClient  {
         }
 
     }
-
-
-
-     //   adapter.receiveConfigInfo(f.getBody().getValue());
-       // CacheData cache = cacheMap.get().get(GroupKey.getKeyTenant(flyingConfigProperties.getAppId(), flyingConfigProperties.getNamespace()));
-
-      //  cache.checkListenerMd5();
-
 
 }

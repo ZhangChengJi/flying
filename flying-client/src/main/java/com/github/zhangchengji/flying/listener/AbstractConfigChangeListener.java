@@ -20,9 +20,6 @@ package com.github.zhangchengji.flying.listener;
 
 public abstract class AbstractConfigChangeListener extends AbstractListener {
     
-
-    public abstract void receiveConfigChange(final ConfigChangeEvent event);
-    
     @Override
     public void receiveConfigInfo(final String configInfo) {
         System.out.println("啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦");

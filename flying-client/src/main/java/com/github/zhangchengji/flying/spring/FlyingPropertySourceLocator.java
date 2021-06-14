@@ -17,15 +17,14 @@
 package com.github.zhangchengji.flying.spring;
 
 
+import com.github.zhangchengji.flying.FlyingConfigManager;
 import com.github.zhangchengji.flying.constants.FlyingConfigProperties;
 import com.github.zhangchengji.flying.constants.PropertySourcesConstants;
 import com.github.zhangchengji.flying.exceptions.FlyingConfigException;
+import com.github.zhangchengji.flying.factory.Grpc;
+import com.github.zhangchengji.flying.factory.GrpcFactory;
 import com.github.zhangchengji.flying.repository.RemoteConfigRepository;
-import com.github.zhangchengji.flying.util.GrpcClient;
 import com.github.zhangchengji.proto.client.FlyingConfig;
-import com.google.common.base.Joiner;
-import com.google.common.escape.Escaper;
-import com.google.common.net.UrlEscapers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -43,31 +42,30 @@ import java.util.*;
 @Order(0)
 public class FlyingPropertySourceLocator implements PropertySourceLocator {
     private final static Logger log = LoggerFactory.getLogger(FlyingPropertySourceLocator.class);
-    private static final Joiner.MapJoiner MAP_JOINER = Joiner.on("&").withKeyValueSeparator("=");
-    private static final Escaper queryParamEscaper = UrlEscapers.urlFormParameterEscaper();
     private FlyingConfigProperties flyingConfigProperties;
-    private GrpcClient grpcClient;
-    private final boolean isRefreshEnabled;
-     FlyingPropertySourceLocator(FlyingConfigProperties flyingConfigProperties,GrpcClient grpcClient){
-         this.flyingConfigProperties = flyingConfigProperties;
+    private  boolean isRefreshEnabled;
+    private Grpc grpc;
+
+     FlyingPropertySourceLocator(FlyingConfigManager flyingConfigManager){
+         this.flyingConfigProperties = flyingConfigManager.getFlyingConfigProperties();
+         this.grpc=flyingConfigManager.grpc;
          this.isRefreshEnabled = flyingConfigProperties.isRefreshEnabled();
-         this.grpcClient=grpcClient;
      }
     @Override
-    public PropertySource<?> locate(Environment environment) {
-         flyingConfigProperties.setEnvironment(environment);
+    public PropertySource<?> locate(Environment env) {
+         flyingConfigProperties.setEnvironment(env);
         CompositePropertySource composite = new CompositePropertySource(PropertySourcesConstants.FLYING_BOOTSTRAP_PROPERTY_SOURCE_NAME);
         String namespaces = flyingConfigProperties.getNamespace();
         log.info("all namespace："+namespaces);
 
         String[] namespaceList= namespaces.trim().split(",");
       try {
-          log.info("Getting configuration... 🚗 🚗 🚗 "); //正在获取配置
+          log.info("Getting configuration 🚚 ... "); //正在获取配置
         for (String namespace : namespaceList) {
                 composite.addFirstPropertySource(getConfig(namespace));
         }
           if (!isRefreshEnabled) {
-           grpcClient.shutdown();
+              grpc.shutdown();
           }
         } catch (Exception e) {
             log.error("Configuration failed to load");
@@ -81,10 +79,11 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
     public synchronized FlyingPropertySource getConfig(String namespace)   {
         log.info("⚙️ namespace: "+namespace+"Get configuration");
         try {
-            FlyingConfig flyingConfig = grpcClient.config(namespace);
+            FlyingConfig flyingConfig = grpc.config(namespace);
             if (flyingConfig==null){
                return null;
             }
+
             FlyingPropertySource source=null;
             log.info("namespace:"+namespace+",Configuration obtained successfully 🎈🎈🎈");
             switch(flyingConfig.getFormat()){

@@ -18,7 +18,7 @@ package com.github.zhangchengji.flying.spring;
 
 import com.github.zhangchengji.flying.FlyingConfigManager;
 import com.github.zhangchengji.flying.constants.FlyingConfigProperties;
-import com.github.zhangchengji.flying.util.GrpcClient;
+import com.github.zhangchengji.flying.refresh.FlyingContextRefresher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -34,18 +34,16 @@ public class FlyingConfigBootstrapConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public FlyingConfigProperties flyingConfigProperties(){return new FlyingConfigProperties();}
-    @Bean
-    public GrpcClient grpcClient(FlyingConfigProperties flyingConfigProperties){
-        return new GrpcClient(flyingConfigProperties);
-    }
+
     @Bean
     public FlyingConfigManager flyingConfigManager(
-            FlyingConfigProperties flyingConfigProperties,GrpcClient grpcClient) {
-        return new FlyingConfigManager(flyingConfigProperties,grpcClient);
+            FlyingConfigProperties flyingConfigProperties) {
+        return new FlyingConfigManager(flyingConfigProperties);
     }
 
     @Bean
-    public FlyingPropertySourceLocator flyingPropertySourceLocator(FlyingConfigProperties flyingConfigProperties,GrpcClient grpcClient){
-        return new FlyingPropertySourceLocator(flyingConfigProperties,grpcClient);
+    public FlyingPropertySourceLocator flyingPropertySourceLocator(FlyingConfigManager flyingConfigManager){
+        return new FlyingPropertySourceLocator(flyingConfigManager);
     }
+    
 }

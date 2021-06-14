@@ -1,4 +1,4 @@
-const url = 'http://localhost:8888'
+const url = 'http://192.168.1.125:8888'
 let publicPath = '/'
 module.exports = {
     publicPath: publicPath,
@@ -24,7 +24,7 @@ module.exports = {
     devServer: {
 
         proxy: {
-            '/': {
+            '/api': {
                 target: url,
                 ws: true,
                 pathRewrite: {

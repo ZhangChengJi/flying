@@ -3,7 +3,8 @@ package com.github.zhangchengji.flying;
 import com.github.zhangchengji.flying.constants.FlyingConfigProperties;
 import com.github.zhangchengji.flying.exceptions.FlyingConfigException;
 import com.github.zhangchengji.flying.factory.FlyingFactory;
-import com.github.zhangchengji.flying.util.GrpcClient;
+import com.github.zhangchengji.flying.factory.Grpc;
+import com.github.zhangchengji.flying.factory.GrpcFactory;
 
 import java.util.Objects;
 /*
@@ -25,22 +26,29 @@ import java.util.Objects;
 public class FlyingConfigManager {
 
     private static ConfigService service = null;
-    private static GrpcClient grpcClient;
+    public static Grpc grpc=null;
     private FlyingConfigProperties flyingConfigProperties;
-    public FlyingConfigManager(FlyingConfigProperties flyingConfigProperties, GrpcClient grpcClient){
+    public FlyingConfigManager(FlyingConfigProperties flyingConfigProperties){
         this.flyingConfigProperties=flyingConfigProperties;
-        this.grpcClient=grpcClient;
-        createConfigService(flyingConfigProperties);
+        createGrpcFactory(flyingConfigProperties.getServerAddr(),flyingConfigProperties.getAppId());
+
     }
-    static ConfigService createConfigService(FlyingConfigProperties flyingConfigProperties){
+    static Grpc createGrpcFactory(String address,String appId){
+        if (Objects.isNull(grpc)) {
+            grpc =  FlyingFactory.createGrpcFactory(address,appId);
+        }
+        return grpc;
+    }
+    static ConfigService createConfigService(FlyingConfigProperties flyingConfigProperties,Grpc grpc ){
 //        if (Objects.isNull(service)) {
 //            synchronized (FlyingConfigManager.class) {
                 try {
                     if (Objects.isNull(service)) {
-                        service = FlyingFactory.createConfigService(flyingConfigProperties.listConfigServiceProperties(),grpcClient);
+                        service = FlyingFactory.createConfigService(flyingConfigProperties.listConfigServiceProperties(),grpc);
                     }
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                     throw new FlyingConfigException("出问题lalalala",e);
 
                 }
@@ -50,7 +58,7 @@ public class FlyingConfigManager {
     }
     public ConfigService getConfigService() {
         if (Objects.isNull(service)) {
-            createConfigService(this.flyingConfigProperties);
+            createConfigService(this.flyingConfigProperties,this.grpc);
         }
         return service;
     }

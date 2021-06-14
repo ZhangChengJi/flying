@@ -44,13 +44,10 @@ public class FlyingContextRefresher implements ApplicationListener<ApplicationRe
         private final boolean isRefreshEnabled;
         private ApplicationContext applicationContext;
         private Map<String, Listener> listenerMap = new ConcurrentHashMap<String, Listener>(16);
-   // private final ConfigService configService = FlyingInject.getInstance(FlyingConfigService.class);
      public FlyingContextRefresher(FlyingConfigManager flyingConfigManager ){
          this.flyingConfigProperties=flyingConfigManager.getFlyingConfigProperties();
          this.configService=flyingConfigManager.getConfigService();
          this.isRefreshEnabled=this.flyingConfigProperties.isRefreshEnabled();
-
-
      }
     /***
      * 加载Spring配置文件时，如果Spring配置文件中所定义的Bean类实现了ApplicationContextAware 接口，那么在加载Spring配置文件时，

@@ -243,6 +243,8 @@ func UpdateApp(app model.AppDetail, nodes []*model.Node) (code int32, err error)
 		code, err = ClearAppNode(&app.App, clearId, uNodes)
 		if code != constant.DELETE_SUCCESS {
 			return constant.UPDATE_FAILED, err
+		} else {
+			code = constant.UPDATE_SUCCESS
 		}
 	}
 	var appt model.App
@@ -273,6 +275,8 @@ func UpdateApp(app model.AppDetail, nodes []*model.Node) (code int32, err error)
 		code, err = CreateApp(&app.App, nodeins)
 		if code != constant.CREATE_SUCCESS {
 			return constant.UPDATE_FAILED, err
+		} else {
+			code = constant.UPDATE_SUCCESS
 		}
 	}
 

@@ -16,9 +16,10 @@
 
 package com.github.zhangchengji.flying;
 
+import com.github.zhangchengji.flying.factory.Grpc;
+import com.github.zhangchengji.flying.factory.GrpcFactory;
 import com.github.zhangchengji.flying.listener.Listener;
 import com.github.zhangchengji.flying.refresh.FlyingRefreshClient;
-import com.github.zhangchengji.flying.util.GrpcClient;
 
 import java.util.*;
 
@@ -26,9 +27,9 @@ import java.util.*;
 public class FlyingConfigService implements ConfigService {
     private Properties properties;
     private FlyingRefreshClient flyingRefreshClient;
-    public  FlyingConfigService(Properties properties, GrpcClient grpcClient){
+    public  FlyingConfigService(Properties properties, Grpc grpc){
         this.properties=properties;
-       this.flyingRefreshClient=new FlyingRefreshClient(properties,grpcClient);
+       this.flyingRefreshClient=new FlyingRefreshClient(properties,grpc);
 
 
     }
