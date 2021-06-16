@@ -30,7 +30,8 @@ public class FlyingConfigManager {
     private FlyingConfigProperties flyingConfigProperties;
     public FlyingConfigManager(FlyingConfigProperties flyingConfigProperties){
         this.flyingConfigProperties=flyingConfigProperties;
-        createGrpcFactory(flyingConfigProperties.getServerAddr(),flyingConfigProperties.getAppId());
+        this.grpc= GrpcFactory.initGrpcConnection(flyingConfigProperties.getServerAddr());
+       // createGrpcFactory(flyingConfigProperties.getServerAddr(),flyingConfigProperties.getAppId());
 
     }
     static Grpc createGrpcFactory(String address,String appId){

@@ -2,10 +2,9 @@ package com.github.zhangchengji.flying.factory;
 
 import com.github.zhangchengji.flying.constants.Constants;
 
-import com.github.zhangchengji.proto.client.Client;
-import com.github.zhangchengji.proto.common.Response;
-import com.github.zhangchengji.proto.client.ClientServiceGrpc;
-import com.github.zhangchengji.proto.client.FlyingConfig;
+import com.github.zhangchengji.flying.client.Client;
+import com.github.zhangchengji.flying.common.Response;
+import com.github.zhangchengji.flying.client.FlyingConfig;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import io.grpc.ChannelCredentials;
@@ -16,25 +15,35 @@ import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.bootstrap.encrypt.KeyProperties;
 import org.springframework.core.io.ClassPathResource;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-import javax.net.ssl.SSLException;
+import javax.net.ssl.*;
 import java.io.*;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
 import java.util.concurrent.TimeUnit;
 
-public class GrpcFactory implements Grpc{
+public class GrpcFactory implements Grpc {
 
     private static final Logger log = LoggerFactory
             .getLogger(GrpcFactory.class);
 
-    private  ClientServiceGrpc.ClientServiceBlockingStub blockingStub;
+  // private  ClientServiceGrpc.ClientServiceBlockingStub blockingStub;
     private ManagedChannel channel;
     private Server server;
     private  Client client;
     private  String appId;
     private String address;
+    private Grpc grpc;
     public GrpcFactory(String address,String appId){
         this.appId = appId;
         this.address=address;
@@ -42,21 +51,41 @@ public class GrpcFactory implements Grpc{
     }
 
 
-    public  void initGrpcConnection(String address) {
-        ClassPathResource classPathResource = new ClassPathResource("ca.pem");
-        InputStream stream = null;
-        try {
-            stream = classPathResource.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        SslContextBuilder builder = GrpcSslContexts.forClient();
-        SslContext sslContext = null;
-        try {
-            sslContext = builder.trustManager(stream).build();
-        } catch (SSLException e) {
-            e.printStackTrace();
-        }
+    public static Grpc initGrpcConnection(String address) {
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .sslSocketFactory(getSSLSocketFactory(), new CustomTrustManager())
+                .hostnameVerifier(getHostnameVerifier())
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://localhost:8881")
+                .client(okHttpClient)
+                .addConverterFactory(new NullOnEmptyConverterFactory())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+        Grpc  grpc = retrofit.create(Grpc.class);
+         return  grpc;
+
+//
+//        ClassPathResource classPathResource = new ClassPathResource("ca.pem");
+//        InputStream stream = null;
+//        try {
+//            stream = classPathResource.getInputStream();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        SslContextBuilder builder = GrpcSslContexts.forClient();
+//        SslContext sslContext = null;
+//        try {
+//            sslContext = builder.trustManager(stream).build();
+//        } catch (SSLException e) {
+//            e.printStackTrace();
+//        }
 //        ChannelCredentials channelCredentials=null;
 //        try {
 //            assert stream != null;
@@ -66,9 +95,9 @@ public class GrpcFactory implements Grpc{
 //        }
 
         // 构建 Channel
-         this.channel = NettyChannelBuilder.forTarget(address).overrideAuthority(Constants.SERVER_NAME).sslContext(sslContext).build();
-
-        this.blockingStub = ClientServiceGrpc.newBlockingStub(channel);
+//         this.channel = NettyChannelBuilder.forTarget(address).overrideAuthority(Constants.SERVER_NAME).sslContext(sslContext).build();
+//
+//        this.blockingStub = ClientServiceGrpc.newBlockingStub(channel);
 
     }
 
@@ -88,46 +117,65 @@ public class GrpcFactory implements Grpc{
         client= Client.newBuilder().setAppId(this.getAppId()).setNamespace(namespace).build();
           return client;
     }
-
-    @Override
-    public FlyingConfig config(String namespace) {
-        FlyingConfig flyingConfig = null;
-        Response resp= this.blockingStub.config(createClient(namespace));
-        if (resp.getCode() == 200) {
-            try {
-                flyingConfig = resp.getData().unpack(FlyingConfig.class);
-                if (flyingConfig==null){
-                    throw new RuntimeException("获取配置信息为null，请检查配置中心是否存在此项目");
-                }
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+    public static HostnameVerifier getHostnameVerifier() {
+        HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
             }
-        }else if (resp.getCode() == 500) {
-            log.error(resp.getMessage());
-        }
-
-        return flyingConfig;
+        };
+        return hostnameVerifier;
     }
-
-    @Override
-    public boolean listener() {
-        Response resp = this.blockingStub.listener(client);
-       if (resp.getCode() ==304){
-           log.debug(resp.getMessage());
-           return false;
-       }else return resp.getCode() == 200;
-    }
-    @Override
-    public  void shutdown(){
-        channel.shutdown();
-        // fail the test if cannot gracefully shutdown
+    private static SSLSocketFactory getSSLSocketFactory() {
+        SSLContext sslContext = null;
         try {
-            assert channel.awaitTermination(5, TimeUnit.SECONDS) : "channel cannot be gracefully shutdown";
-        } catch (InterruptedException e) {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            ClassPathResource classPathResource = new ClassPathResource("ca.pem");
+        InputStream stream = null;
+        try {
+            stream = classPathResource.getInputStream();
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            channel.shutdownNow();
         }
-
+            CertificateFactory certificateFactory;
+            certificateFactory = CertificateFactory.getInstance("X.509");
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("flying.com",certificateFactory.generateCertificate(stream));
+             sslContext = SSLContext.getInstance("TLS");
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+            return sslContext.getSocketFactory();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sslContext.getSocketFactory();
     }
+
+    @Override
+    public Call<Response> config(Client client) {
+
+        return null;
+    }
+
+//    @Override
+//    public boolean listener() {
+//        Response resp = this.blockingStub.listener(client);
+//       if (resp.getCode() ==304){
+//           log.debug(resp.getMessage());
+//           return false;
+//       }else return resp.getCode() == 200;
+//    }
+//    @Override
+//    public  void shutdown(){
+//        channel.shutdown();
+//        // fail the test if cannot gracefully shutdown
+//        try {
+//            assert channel.awaitTermination(5, TimeUnit.SECONDS) : "channel cannot be gracefully shutdown";
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } finally {
+//            channel.shutdownNow();
+//        }
+
+  //  }
 }

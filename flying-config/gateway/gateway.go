@@ -3,28 +3,25 @@ package gateway
 import (
 	"context"
 	"crypto/tls"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"strings"
-
-	client "flying-config/proto/client"
-	pb "go-grpc-example/10-grpc-gateway/proto"
-	"go-grpc-example/10-grpc-gateway/server/swagger"
-
+	"flying-config/global"
+	"flying-config/proto/client"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
 )
 
 // ProvideHTTP 把gRPC服务转成HTTP服务，让gRPC同时支持HTTP
 func ProvideHTTP(endpoint string, grpcServer *grpc.Server) *http.Server {
 	ctx := context.Background()
 	//获取证书
-	creds, err := credentials.NewClientTLSFromFile("../tls/server.pem", "go-grpc-example")
+	creds, err := credentials.NewClientTLSFromFile(global.GVA_CONFIG.System.PrivateKey, global.GVA_CONFIG.System.ServerName)
 	if err != nil {
 		log.Fatalf("Failed to create TLS credentials %v", err)
 	}
@@ -33,8 +30,7 @@ func ProvideHTTP(endpoint string, grpcServer *grpc.Server) *http.Server {
 	//新建gwmux，它是grpc-gateway的请求复用器。它将http请求与模式匹配，并调用相应的处理程序。
 	gwmux := runtime.NewServeMux()
 	//将服务的http处理程序注册到gwmux。处理程序通过endpoint转发请求到grpc端点
-	client.
-		err = pb.RegisterSimpleHandlerFromEndpoint(ctx, gwmux, endpoint, dopts)
+	err = client.RegisterClientServiceHandlerFromEndpoint(ctx, gwmux, endpoint, dopts)
 	if err != nil {
 		log.Fatalf("Register Endpoint err: %v", err)
 	}
@@ -42,10 +38,6 @@ func ProvideHTTP(endpoint string, grpcServer *grpc.Server) *http.Server {
 	mux := http.NewServeMux()
 	//注册gwmux
 	mux.Handle("/", gwmux)
-	//注册swagger
-	mux.HandleFunc("/swagger/", swagger.ServeSwaggerFile)
-	swagger.ServeSwaggerUI(mux)
-	log.Println(endpoint + " HTTP.Listing whth TLS and token...")
 	return &http.Server{
 		Addr:      endpoint,
 		Handler:   grpcHandlerFunc(grpcServer, mux),
@@ -66,8 +58,8 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 
 // getTLSConfig获取TLS配置
 func getTLSConfig() *tls.Config {
-	cert, _ := ioutil.ReadFile("../tls/server.pem")
-	key, _ := ioutil.ReadFile("../tls/server.key")
+	cert, _ := ioutil.ReadFile(global.GVA_CONFIG.System.PrivateKey)
+	key, _ := ioutil.ReadFile(global.GVA_CONFIG.System.PublicKey)
 	var demoKeyPair *tls.Certificate
 	pair, err := tls.X509KeyPair(cert, key)
 	if err != nil {

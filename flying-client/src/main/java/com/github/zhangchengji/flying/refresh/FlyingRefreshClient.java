@@ -21,13 +21,20 @@ import com.github.zhangchengji.flying.constants.GroupKey;
 import com.github.zhangchengji.flying.factory.Grpc;
 import com.github.zhangchengji.flying.factory.GrpcFactory;
 import com.github.zhangchengji.flying.listener.Listener;
+import com.github.zhangchengji.flying.client.Client;
+import com.github.zhangchengji.flying.client.FlyingConfig;
+import com.github.zhangchengji.flying.common.Response;
 import com.google.common.base.Joiner;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import retrofit2.Call;
 
 import static com.github.zhangchengji.flying.constants.EnvProperties.*;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,12 +57,25 @@ public class FlyingRefreshClient  {
         }
         checkConfigInfo();
     }
+    private Client createClient(String appId,String namespace){
+    return Client.newBuilder().setAppId(appId).setNamespace(namespace).build();
+
+    }
     public CacheData addCacheDataIfAbsent(String appId, String namespace)   {
 
         synchronized (cacheMap) {
             String key = GroupKey.getKeyTenant(appId, namespace, "");
             CacheData cache = new CacheData(appId, namespace,properties.getProperty(SERVER_ADDR));
-                    cache.setValue(grpc.config(namespace).getValue());
+            Call<Response> resp = grpc.config(createClient(appId,namespace));
+            FlyingConfig flyingConfig = null;
+            try {
+                flyingConfig = resp.execute().body().getData().unpack(FlyingConfig.class);
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            cache.setValue(flyingConfig.getValue());
             Map<String, CacheData> copy = new HashMap<String, CacheData>(this.cacheMap.get());
             copy.put(key, cache);
             cacheMap.set(copy);
@@ -116,9 +136,9 @@ public class FlyingRefreshClient  {
                     if (cacheData.getTaskId() == taskId) {
                         cacheDatas.add(cacheData);
 
-                            if(grpc.listener()){
-                                cacheData.checkListenerMd5();
-                            }
+//                            if(grpc.listener()){
+//                                cacheData.checkListenerMd5();
+//                            }
                             if(!connectionStatus){
                                 log.info("The configuration center resumes normal connection successfully"); //配置中心已经恢复正常连接
                                 connectionStatus=true;

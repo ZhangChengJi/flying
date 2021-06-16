@@ -24,7 +24,10 @@ import com.github.zhangchengji.flying.exceptions.FlyingConfigException;
 import com.github.zhangchengji.flying.factory.Grpc;
 import com.github.zhangchengji.flying.factory.GrpcFactory;
 import com.github.zhangchengji.flying.repository.RemoteConfigRepository;
-import com.github.zhangchengji.proto.client.FlyingConfig;
+import com.github.zhangchengji.flying.client.Client;
+import com.github.zhangchengji.flying.client.FlyingConfig;
+import com.github.zhangchengji.flying.common.Response;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -35,6 +38,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import retrofit2.Call;
 
 import java.util.*;
 
@@ -65,7 +69,7 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
                 composite.addFirstPropertySource(getConfig(namespace));
         }
           if (!isRefreshEnabled) {
-              grpc.shutdown();
+             // grpc.shutdown();
           }
         } catch (Exception e) {
             log.error("Configuration failed to load");
@@ -75,11 +79,22 @@ public class FlyingPropertySourceLocator implements PropertySourceLocator {
     }
 
 
+    private Client createClient(String appId, String namespace){
+        return Client.newBuilder().setAppId(appId).setNamespace(namespace).build();
 
+    }
     public synchronized FlyingPropertySource getConfig(String namespace)   {
         log.info("⚙️ namespace: "+namespace+"Get configuration");
         try {
-            FlyingConfig flyingConfig = grpc.config(namespace);
+           Client c= createClient(this.flyingConfigProperties.getAppId(),namespace);
+            Call<Response> resp = grpc.config(c);
+            FlyingConfig flyingConfig = null;
+            try {
+                System.out.println( resp.execute().body().getData());
+                flyingConfig = resp.execute().body().getData().unpack(FlyingConfig.class);
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }
             if (flyingConfig==null){
                return null;
             }
