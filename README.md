@@ -51,12 +51,13 @@ Services are divided into:
    In the root directory of flying, create a service through docker-compose
 
     ```shell
-   $ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up
+   $ cd flying
+   $ docker-compose -f ./deployments/docker-compose/docker-compose.yml up
     ```
 
 Through the above command, you can access from http://localhost:8888/, the default account: admin/123456
 
-After startup, configure the environment to connect to the server through the graphical interface of the management terminal. Note that the default network of docker is bridge, and you cannot connect directly with the localhost:8881 address. Please use `flying-config:8881` or `{local ip}:8881` connection.
+After startup, configure the environment to connect to the server through the graphical interface of the management terminal. Note that the default network of docker is bridge, and you cannot connect directly with the localhost:8881 address. Access directly by name in the docker0 bridge of the bridge, Please use `flying-config:8881` or `{local ip}:8881` connection.
 
 When connecting to the management server, the environment name should be defined as follows.
 

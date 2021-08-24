@@ -24,6 +24,8 @@ services:
       - "MYSQL_USERNAME=root"
       - "MYSQL_PASSWORD=123456"
       - "MYSQL_DBNAME=flying_admin"
+      - "SLEEP_SECOND=4"
+   
 
   flying-config:
     image: "registry.cn-qingdao.aliyuncs.com/zcj-oss/flying-config"
@@ -36,3 +38,4 @@ services:
       - "MYSQL_USERNAME=root"
       - "MYSQL_PASSWORD=123456"
       - "MYSQL_DBNAME=flying_config"
+      - "SLEEP_SECOND=4"

@@ -50,12 +50,13 @@
    在 flying 的根目录下，通过 docker-compose 创建服务
 
     ```shell
-   $ docker-compose -f ./deployments/docker-compose/docker-compose.yaml up
+   $ cd flying
+   $ docker-compose -f ./deployments/docker-compose/docker-compose.yml up
     ```
 
 通过上述命令，您可以从通过http://localhost:8888/ 访问，默认帐号: admin/123456
 
-启动后通过管理端图形化界面配置环境连接服务端，注意docker默认网络是bridge，无法直接使用localhost:8881地址连接，请使用`flying-config:8881`或者`{本机ip}:8881`进行连接。
+启动后通过管理端图形化界面配置环境连接服务端，注意docker默认网络是bridge，无法直接使用localhost:8881地址连接，在bridge的docker0网桥中直接通过名称访问， 请使用`flying-config:8881`或者`{本机ip}:8881`进行连接。
 
 连接管理服务端的时候环境名称尽量按以下名称来定义。
 
