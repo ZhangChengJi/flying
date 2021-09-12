@@ -2,6 +2,7 @@
 /flying-ui/node_modules
 /flying-ui/dist
 /flying-client/target
+/deployments/docker-compose/data
 log
 .DS_Store
 

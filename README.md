@@ -117,7 +117,7 @@ Note: The docker-compose deployment method is only suitable for testing. For rea
                url: flying-config.flying.svc:8881 #Environment address (server address)
      ```
 
-     
+  Please view the flying example: https://github.com/ZhangChengJi/flying-example
 
 + golang client
 

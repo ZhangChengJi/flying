@@ -119,7 +119,7 @@
                url: flying-config.flying.svc:8881 #环境地址(服务端地址)
      ```
 
-     
+  案例请查看flying-example：https://github.com/ZhangChengJi/flying-example
 
 + golang客户端
 

@@ -24,7 +24,7 @@ services:
       - "MYSQL_USERNAME=root"
       - "MYSQL_PASSWORD=123456"
       - "MYSQL_DBNAME=flying_admin"
-      - "SLEEP_SECOND=4"
+      - "SLEEP_SECOND=10"
    
 
   flying-config:
@@ -38,4 +38,4 @@ services:
       - "MYSQL_USERNAME=root"
       - "MYSQL_PASSWORD=123456"
       - "MYSQL_DBNAME=flying_config"
-      - "SLEEP_SECOND=4"
+      - "SLEEP_SECOND=10"
