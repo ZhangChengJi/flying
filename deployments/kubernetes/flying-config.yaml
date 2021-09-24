@@ -25,11 +25,11 @@ spec:
           imagePullPolicy: Always
           env:
             - name: MYSQL_URL
-              value: "192.168.0.57:3306"
+              value: "mysql.flying.svc:3306"
             - name: MYSQL_USERNAME
               value: "root"
             - name: MYSQL_PASSWORD
-              value: "djs@12316"
+              value: "123456"
             - name: MYSQL_DBNAME
               value: "flying_config"
           ports:

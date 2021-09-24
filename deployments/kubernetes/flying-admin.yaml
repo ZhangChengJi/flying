@@ -25,11 +25,11 @@ spec:
           imagePullPolicy: Always
           env:
             - name: MYSQL_URL
-              value: "192.168.1.165:3306"
+              value: "mysql.flying.svc:3306"
             - name: MYSQL_USERNAME
               value: "root"
             - name: MYSQL_PASSWORD
-              value: "djs@12316"
+              value: "123456"
             - name: MYSQL_DBNAME
               value: "flying_admin"
           ports:
@@ -41,11 +41,13 @@ metadata:
   name: flying-admin
   namespace: flying
 spec:
+  type: NodePort
   ports:
     - name: web
       port: 8888
       protocol: TCP
       targetPort: 8888
+      nodePort: 31880
   selector:
     app: flying-admin
 ---

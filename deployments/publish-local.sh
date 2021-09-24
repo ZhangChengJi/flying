@@ -3,7 +3,7 @@
 #######前端打包############
 echo "前端打包"
 cd ../flying-ui && yarn install
-yarn build && mv dist/ ../flying-admin/dist
+yarn build && mv dist/ ../flying-admin/
 
 ########这里可以改成自己的镜像仓库##########
 cd ../flying-admin/

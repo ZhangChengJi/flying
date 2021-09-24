@@ -21,6 +21,11 @@ Services are divided into:
 
 + **flying-client client:** Configuration receiving function, real-time update configuration and other functions. At present, only the Java client connection is implemented, and more language clients will appear in the future.
 
+Demo Environment:
+
++ http://222.175.101.136:32090/
++ User/Password: admin/123456
+
 ## Function description
 
 + Unified management of multi-environment and multi-cluster configuration server
