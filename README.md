@@ -23,8 +23,6 @@ Services are divided into:
 
 Demo Environment:
 
-+ http://222.175.101.136:32090/
-+ User/Password: admin/123456
 
 ## Function description
 
