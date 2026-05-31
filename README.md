@@ -9,147 +9,432 @@
 
 > English | [Chinese](README_zh.md)
 
-## Introduction
+## Overview
 
-At present, the direction of microservice architecture is gradually moving closer to the grid of kubernetes services, and the concept of multi-environment and multi-cluster appears. Flying can realize the unified management of multi-cluster microservice configuration.
+Flying is an open-source cloud-native configuration center designed for microservice systems that run across multiple environments, clusters, and deployment stages.
 
-Services are divided into:
+In modern enterprise systems, services are no longer deployed in a single fixed environment. A real-world microservice platform often needs to manage configuration across development, testing, staging, production, private cloud, public cloud, and Kubernetes clusters. Flying provides a unified configuration management layer for these scenarios.
 
-+ **flying-admin management terminal:** The management interface is used to manage the configuration of multiple flying-config servers. It is mainly for adding and modifying `environment`, `application project` management, `namespace` publishing and other functions.
+It helps teams centrally manage application configuration, publish changes safely, push updates to clients in real time, and monitor the connection status of configuration servers across different environments.
 
-+ **flying-config server:** The real configuration center server, responsible for configuring information storage, pushing client notifications, etc. Can be deployed in multiple environments.
+Flying is especially suitable for:
 
-+ **flying-client client:** Configuration receiving function, real-time update configuration and other functions. At present, only the Java client connection is implemented, and more language clients will appear in the future.
+- Cloud-native microservice platforms
+- Multi-environment enterprise applications
+- Kubernetes-based deployment systems
+- Internal developer platforms
+- Configuration management for distributed systems
+- Teams that need lightweight, open, self-hosted infrastructure
 
-Demo Environment:
+------
 
+## Why Flying Matters
 
-## Function description
+Configuration management is a foundational part of the microservice ecosystem. Without a reliable configuration center, teams often duplicate configuration files, manually update environment variables, restart services for every change, or maintain different configuration logic in every environment.
 
-+ Unified management of multi-environment and multi-cluster configuration server
-  + One-click configuration of multiple environment servers for management directly through the management interface
-  + No need to restart the management end to configure the server
-+ Multi-server running status monitoring
-  + When connecting to servers in multiple environments, the connection status will be displayed in real time
+Flying solves this by providing an open and self-hosted configuration infrastructure with:
 
-+ Configure hot reload
-  + After the configuration is modified and released, the client receives the newly released configuration within 300 milliseconds
-+ High remote connection efficiency
-  + The remote communication of the whole structure adopts grpc connection and tls encryption, which is efficient and safe. You can customize the encryption certificate.
+- Unified management for multiple environments and clusters
+- Real-time configuration publishing and hot reload
+- Secure and efficient gRPC communication with TLS encryption
+- A web-based management console
+- A Java client for Spring Boot applications
+- Docker and Kubernetes deployment support
+- A modular architecture that can be extended to more languages and deployment models
 
+Although Flying is a lightweight project, it addresses an important infrastructure problem in the cloud-native and microservice ecosystem: how to manage configuration consistently, safely, and efficiently across distributed systems.
 
+------
 
-## Quick start
+## Features
 
-**deploy**
+### Multi-environment configuration management
 
-1. Clone the code repository
+Manage configuration for different environments from a single admin console.
 
-   ```shell
-   $ git clone https://github.com/ZhangChengJi/flying.git
-   ```
+Common environment examples:
 
-2. Start the service
+- `DEV` — development environment
+- `FAT` — functional testing environment
+- `UAT` — user acceptance / regression testing environment
+- `PRO` — production environment
 
-   In the root directory of flying, create a service through docker-compose
+### Multi-cluster support
 
-    ```shell
-   $ cd flying
-   $ docker-compose -f ./deployments/docker-compose/docker-compose.yml up
-    ```
+Flying is designed for systems where services may run in multiple Kubernetes clusters or isolated environments. The admin console can manage multiple `flying-config` servers deployed in different environments.
 
-Through the above command, you can access from http://localhost:8888/, the default account: admin/123456
+### Real-time configuration hot reload
 
-After startup, configure the environment to connect to the server through the graphical interface of the management terminal. Note that the default network of docker is bridge, and you cannot connect directly with the localhost:8881 address. Access directly by name in the docker0 bridge of the bridge, Please use `flying-config:8881` or `{local ip}:8881` connection.
+After a configuration is modified and published, the client can receive the latest configuration update without restarting the application.
 
-When connecting to the management server, the environment name should be defined as follows.
+### gRPC-based communication
 
-- DEV
-  - Development environment
+Flying uses gRPC for remote communication between components, providing efficient communication for distributed configuration delivery.
 
-- FAT
-  - Test environment, equivalent to alpha environment (functional test)
+### TLS encryption
 
-- UAT
-  - Integrated environment, equivalent to beta environment (regression testing)
+Remote communication supports TLS encryption, making it suitable for internal enterprise environments where secure service-to-service communication is required.
 
-- PRO
+### Web-based admin console
 
-    - Production Environment
+`flying-admin` provides a management UI for:
 
-  
+- Environment management
+- Application management
+- Namespace management
+- Configuration editing
+- Configuration publishing
+- Multi-server connection status monitoring
 
-Note: The docker-compose deployment method is only suitable for testing. For real production use, please use the HA database.
+### Java client for Spring Boot
 
->It is recommended that the management end and the server end use containers for convenient and efficient deployment. The deployment scripts of docker-compase and kubernetes can be found in the /deployments directory. Of course, it can also be deployed via binary.
+`flying-client` allows Spring Boot applications to load configuration from Flying and receive updates in real time.
 
+### Docker and Kubernetes deployment
 
+Flying provides deployment scripts for Docker Compose and Kubernetes, making it easy to run locally or deploy into cloud-native environments.
 
-**SDK docking**
+------
 
-+ Java client
+## Architecture
 
-  1. Add the flying-client maven package file to your springboot project:
+Flying consists of three main components:
 
-     ```xml
-      <dependency>
-         <groupId>com.github.zhangchengji</groupId>
-         <artifactId>flying-client</artifactId>
-         <version>1.0.0</version>
-      </dependency>
-     ```
+```text
+┌──────────────────────┐
+│     flying-admin     │
+│  Management Console  │
+└──────────┬───────────┘
+           │
+           │ Manage environments,
+           │ applications and namespaces
+           ▼
+┌──────────────────────┐
+│    flying-config     │
+│ Configuration Server │
+└──────────┬───────────┘
+           │
+           │ gRPC + TLS
+           │ Real-time config push
+           ▼
+┌──────────────────────┐
+│    flying-client     │
+│ Application Client   │
+└──────────────────────┘
+```
 
-     Imported successfully
+### flying-admin
 
-  2. Change application.yml to bootstrap.yml in springboot
+The management console used to manage multiple `flying-config` servers.
 
-  3. Add configuration in the bootstrap.yml file:
+Main responsibilities:
 
-     ```yml
-     spring:
-       profiles:
-         active: ${ACTIVE:dev} # Configure the startup environment, if the environment variable $ACTIVE is configured with the environment name, then the $ACTIVE will be used by default
-       flying:
-         bootstrap:
-           app-id: scaffold-user #Current own project name
-           enabled: true # Whether to open the flying configuration center, the default is false
-           refresh-enabled: true # Whether to enable real-time configuration update, default is false
-           namespace: default # The namespace name of the current project configuration information configured on the server side, there can be multiple, separated by multiple commas
-           address: # Configure multiple environments, the environment loading configuration will be selected according to the spring.profiles.active environment name at startup
-             - name: uat # environment name
-               url: flying-config.flying.svc:8881 #Environment address (server address)
-     ```
+- Manage environments
+- Manage applications
+- Manage namespaces
+- Publish configuration
+- Monitor configuration server connection status
 
-  Please view the flying example: https://github.com/ZhangChengJi/flying-example
+### flying-config
 
-+ golang client
+The configuration server.
 
-  Undeveloped.....
+Main responsibilities:
 
-## kubernetes multiple environments
+- Store configuration data
+- Serve client configuration requests
+- Push configuration update notifications
+- Support deployment in multiple environments or clusters
 
-+ When using the flying configuration center in multiple kubernetes clusters, it is recommended to only establish the flying-admin management terminal in the internal network/test environment, and then expose the grpc encrypted connection address of the flying-config server in each cluster through the dedicated line or external network ip.
-+ When the microservices in each cluster connect to flying-config, it is recommended to use the kubernetes service attribute name to connect, for example: `flying-config.flying.svc:8881`
+### flying-client
 
+The application-side client.
 
+Main responsibilities:
 
+- Load remote configuration during application startup
+- Listen for configuration changes
+- Refresh application configuration in real time
+- Integrate with Spring Boot applications
+
+Currently, the Java client is implemented. More language clients can be added in the future.
+
+------
+
+## Repository Structure
+
+```text
+flying
+├── deployments       # Docker Compose and Kubernetes deployment files
+├── docs              # Documentation
+├── flying-admin      # Admin console backend
+├── flying-client     # Java client SDK
+├── flying-config     # Configuration server
+├── flying-ui         # Web management UI
+├── proto             # gRPC protocol definitions
+├── README.md
+├── README_zh.md
+└── LICENSE
+```
+
+------
+
+## Quick Start
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/ZhangChengJi/flying.git
+cd flying
+```
+
+### 2. Start with Docker Compose
+
+```bash
+docker-compose -f ./deployments/docker-compose/docker-compose.yml up
+```
+
+After the services are started, open the admin console:
+
+```text
+http://localhost:8888
+```
+
+Default account:
+
+```text
+Username: admin
+Password: 123456
+```
+
+> Note: The Docker Compose deployment is recommended for local testing and development. For production usage, please use a highly available database and a production-grade deployment strategy.
+
+------
+
+## Configure Environment Connection
+
+After starting the admin console, configure the environment and connect it to a `flying-config` server.
+
+When using Docker Compose, do not use `localhost:8881` directly from inside the Docker network. Use the service name or local network IP instead:
+
+```text
+flying-config:8881
+```
+
+or:
+
+```text
+{local-ip}:8881
+```
+
+Recommended environment names:
+
+| Environment | Description                                      |
+| ----------- | ------------------------------------------------ |
+| `DEV`       | Development environment                          |
+| `FAT`       | Functional testing / alpha environment           |
+| `UAT`       | User acceptance / regression testing environment |
+| `PRO`       | Production environment                           |
+
+------
+
+## Java Client Usage
+
+### 1. Add Maven dependency
+
+Add `flying-client` to your Spring Boot project:
+
+```xml
+<dependency>
+    <groupId>com.github.zhangchengji</groupId>
+    <artifactId>flying-client</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### 2. Use `bootstrap.yml`
+
+Rename `application.yml` to `bootstrap.yml`, or create a new `bootstrap.yml` file.
+
+Example:
+
+```yaml
+spring:
+  profiles:
+    active: ${ACTIVE:dev}
+
+  flying:
+    bootstrap:
+      app-id: flying-example
+      enabled: true
+      refresh-enabled: true
+      namespace: default
+      address:
+        - name: dev
+          url: flying-config.flying.svc:8881
+        - name: uat
+          url: flying-config-uat.flying.svc:8881
+        - name: pro
+          url: flying-config-pro.flying.svc:8881
+```
+
+Configuration description:
+
+| Field             | Description                                         |
+| ----------------- | --------------------------------------------------- |
+| `app-id`          | Application name registered in Flying               |
+| `enabled`         | Whether to enable Flying configuration center       |
+| `refresh-enabled` | Whether to enable real-time configuration refresh   |
+| `namespace`       | Namespace name configured on the server side        |
+| `address.name`    | Environment name                                    |
+| `address.url`     | Address of the corresponding `flying-config` server |
+
+For a complete Spring Boot example, see:
+
+```text
+https://github.com/ZhangChengJi/flying-example
+```
+
+------
+
+## Kubernetes Multi-environment Deployment
+
+When using Flying across multiple Kubernetes clusters, the recommended deployment model is:
+
+- Deploy `flying-admin` in an internal network or management cluster.
+- Deploy `flying-config` in each target environment or Kubernetes cluster.
+- Expose the encrypted gRPC address of each `flying-config` server through an internal network, private line, or controlled external endpoint.
+- Let microservices connect to the local `flying-config` service inside the same cluster whenever possible.
+
+Example service address inside Kubernetes:
+
+```text
+flying-config.flying.svc:8881
+```
+
+This model helps reduce cross-cluster dependency while still allowing centralized management.
+
+------
+
+## Production Recommendations
+
+For production usage, it is recommended to:
+
+- Use a highly available database
+- Deploy `flying-config` with proper resource limits
+- Enable TLS certificates for gRPC communication
+- Restrict admin console access to internal networks
+- Configure backup and recovery for configuration data
+- Use Kubernetes probes for health checking
+- Separate development, testing, staging, and production environments
+- Use audit logs for configuration publishing workflows
+- Add access control for team-based configuration management
+
+------
+
+## Roadmap
+
+Planned and recommended future improvements:
+
+- Spring Boot 3 support
+- Improved Kubernetes deployment templates
+- More complete access control and permission management
+- Configuration version history
+- Configuration rollback
+- Audit log for publishing operations
+- Gray release / canary configuration publishing
+- Go client SDK
+- Node.js client SDK
+- REST API documentation
+- Helm Chart support
+- Observability integration with Prometheus and Grafana
+- More examples for enterprise microservice systems
+
+------
+
+## Use Cases
+
+### Enterprise microservice platform
+
+Flying can be used as a central configuration layer for internal enterprise microservice systems, allowing teams to manage configuration across multiple services and environments.
+
+### Kubernetes multi-cluster system
+
+Flying can manage configuration servers deployed in different Kubernetes clusters while keeping a unified admin experience.
+
+### Internal developer platform
+
+Flying can be integrated into an internal platform to provide developers with self-service configuration management.
+
+### Lightweight alternative for private deployment
+
+For teams that need a simple, self-hosted, open-source configuration center, Flying provides a lightweight foundation that can be extended according to business requirements.
+
+------
+
+## Technology Stack
+
+Flying uses a multi-language architecture:
+
+- Go
+- Java
+- Vue
+- JavaScript
+- gRPC
+- TLS
+- Docker
+- Kubernetes
+
+------
+
+## Ecosystem Value
+
+Flying contributes to the open-source ecosystem by providing a practical configuration management foundation for cloud-native microservice systems.
+
+Its value is not limited to being an application-level tool. It is infrastructure software that helps teams solve a common distributed-system problem: managing and delivering configuration safely across multiple environments, services, and clusters.
+
+The project is open source, self-hosted, and suitable for learning, extension, and enterprise internal adoption.
+
+------
+
+## Contributing
+
+Contributions are welcome.
+
+You can contribute by:
+
+- Reporting bugs
+- Improving documentation
+- Adding deployment examples
+- Adding client SDKs for more languages
+- Improving Spring Boot compatibility
+- Enhancing Kubernetes deployment support
+- Submitting pull requests
+
+Before submitting a pull request, please make sure the code is clear, tested, and aligned with the project architecture.
+
+------
 
 ## License
 
-This project has obtained [Apache 2 License](https://github.com/ZhangChengJi/flying/blob/master/LICENSE).
+Flying is released under the Apache License 2.0.
 
-## User registration
+See the `LICENSE` file for details.
 
-> Users are welcome to register in [https://github.com/ZhangChengJi/flying/issues/1](https://github.com/ZhangChengJi/flying/issues/1)
+------
 
-|      |      |      |      |
-| ---- | ---- | ---- | ---- |
-|      |      |      |      |
-|      |      |      |      |
-|      |      |      |      |
+## Contact
 
+Maintainer: ZhangChengJi
 
+Email:
 
-## contact us
+```text
+380702562@qq.com
+```
 
-Email 380702562@qq.com 
+GitHub:
+
+```text
+https://github.com/ZhangChengJi
+```
